@@ -56,7 +56,8 @@
             "padded-blocks": "off",
             "semi": "off",
             "prefer-const": "off",
-            "comma-dangle": "off"
+            "comma-dangle": "off",
+            "quotes": "off"
         }
     },
     "browserslist": [

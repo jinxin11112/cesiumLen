@@ -3,10 +3,9 @@
 </template>
 
 <script>
-    import { ViewerEntity } from '../mapUtil/viewerEntity'
+    import { ViewerEntity } from '../mapUtil'
 
     export default {
-        name: 'CesiumContainer',
         data () {
             return {
                 viewer: null
@@ -14,11 +13,16 @@
         },
         mounted () {
             this.viewer = new ViewerEntity('cesiumContainer');
-            this.viewer.drawRadar();
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    this.viewer.drawEntity.drawPoint({
+                        lat: 23 + 0.7 * i,
+                        lon: 121 + 0.7 * j,
+                        hei: 0
+                    });
+                }
+            }
         },
-        destroyed () {
-            this.viewer.destroy();
-        }
     }
 </script>
 

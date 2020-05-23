@@ -1,9 +1,19 @@
 import * as Cesium from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 
+// 专门用于编写绘图相关方法
+import { DrawEntity } from './drawEntity'
+
 let viewer = null
 
+/**
+ * 使用时先实例化，传入divId生产viewer对象
+ * 未经实例化的viewer对象为null
+ */
 export class ViewerEntity {
+
+    // 绘图相关方法
+    drawEntity = null
 
     // 构造函数, 获取viewer
     constructor (cesiumDivId, option, centerPoint) {
@@ -20,10 +30,20 @@ export class ViewerEntity {
             sceneMode: Cesium.SceneMode.SCENE3D
         }, option)
         viewer = new Cesium.Viewer(cesiumDivId, option)
-        // 去除cesium的logo,改为显示当前位置
-        let infoDom = document.getElementsByClassName('cesium-viewer-bottom')[0]
-        infoDom.style.color = '#FFF'
-        infoDom.innerHTML = ''
+        this.drawEntity = new DrawEntity(viewer)
+        // 去除cesium的logo
+        viewer._cesiumWidget._creditContainer.innerHTML = ''
+        this.setCenterPoint(centerPoint)
+        this.showMousePosition()
+        // 去除原有的单击和双击事件
+        viewer.screenSpaceEventHandler.setInputAction(() => {
+        }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
+        viewer.screenSpaceEventHandler.setInputAction(() => {
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    };
+
+    // 设置地图中心点
+    setCenterPoint (centerPoint) {
         // 创建相机初始位置和朝向
         centerPoint = Object.assign({
             lon: 121,
@@ -42,7 +62,12 @@ export class ViewerEntity {
                 roll: initialOrientation.roll
             }
         })
+    }
+
+    // 查看鼠标实时位置
+    showMousePosition () {
         // 实现鼠标移动显示位置
+        viewer._cesiumWidget._creditContainer.style.color = '#FFF'
         let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
         handler.setInputAction((movement) => {
             let cartesian = viewer.camera.pickEllipsoid(movement.endPosition, viewer.scene.globe.ellipsoid)
@@ -53,18 +78,13 @@ export class ViewerEntity {
             let lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4)
             let lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4)
             let height = (viewer.camera.positionCartographic.height / 1000).toFixed(2)
-            infoDom.innerHTML = '经度：' + lon + ' 纬度：' + lat + ' 高度：' + height
+            viewer._cesiumWidget._creditContainer.innerHTML = '经度：' + lon + ' 纬度：' + lat + ' 高度：' + height
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
-        // 去除原有的单击和双击事件
-        viewer.screenSpaceEventHandler.setInputAction(() => {
-        }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
-        viewer.screenSpaceEventHandler.setInputAction(() => {
-        }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-    };
+    }
 
     // 销毁viewer
     destroy () {
-        if (viewer && !viewer.isDestroyed()) viewer.destroy()
+        if (!viewer.isDestroyed()) viewer.destroy()
     }
 
     // 获取摄像机当前位置
@@ -81,19 +101,14 @@ export class ViewerEntity {
         }
     }
 
-    // 添加雷达罩
-    drawRadar () {
-        viewer.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(121, 23, 200.0),
-            ellipsoid: {
-                radii: new Cesium.Cartesian3(200000.0, 200000.0, 200000.0),
-                innerRadii: new Cesium.Cartesian3(10.0, 10.0, 10.0),
-                minimumCone: Cesium.Math.toRadians(20.0),
-                maximumCone: Cesium.Math.PI_OVER_TWO,
-                material: Cesium.Color.YELLOW.withAlpha(0.3),
-                outline: true,
-            }
-        })
+    // 清空viewer
+    clearViewer () {
+        viewer.entities.removeAll()
+    }
+
+    // 将绘制的entity至于viewer中心
+    showEntity () {
         viewer.zoomTo(viewer.entities)
     }
+
 }
