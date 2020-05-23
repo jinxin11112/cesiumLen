@@ -1,7 +1,7 @@
 {
     "name": "cesium-vue",
     "description": "cesium-vue",
-    "author": "liubf",
+    "author": "jinxin",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -13,8 +13,8 @@
         "cesium": "^1.69.0",
         "core-js": "^3.6.4",
         "vue": "^2.6.11",
-        "vue-router": "^3.1.5",
-        "vuex": "^3.1.2"
+        "vuex": "^3.1.2",
+        "vue-router": "^3.1.5"
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.2.0",
