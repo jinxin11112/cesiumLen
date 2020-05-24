@@ -4,6 +4,7 @@
 
 <script>
     import { ViewerEntity } from '../mapUtil'
+    import { drawPoints } from '../test/PointTest'
 
     export default {
         data () {
@@ -13,15 +14,7 @@
         },
         mounted () {
             this.viewer = new ViewerEntity('cesiumContainer');
-            for (let i = 0; i < 10; i++) {
-                for (let j = 0; j < 10; j++) {
-                    this.viewer.drawEntity.drawPoint({
-                        lat: 23 + 0.7 * i,
-                        lon: 121 + 0.7 * j,
-                        hei: 0
-                    });
-                }
-            }
+            drawPoints(this.viewer)
         },
     }
 </script>

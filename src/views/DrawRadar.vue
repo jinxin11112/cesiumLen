@@ -4,6 +4,7 @@
 
 <script>
     import { ViewerEntity } from '../mapUtil'
+    import { drawRadars } from '../test/RadarTest'
 
     export default {
         data () {
@@ -13,7 +14,7 @@
         },
         mounted () {
             this.viewer = new ViewerEntity('cesiumContainer');
-            this.viewer.drawEntity.drawRadar();
+            drawRadars(this.viewer);
         },
     }
 </script>

@@ -68,8 +68,7 @@ export class ViewerEntity {
     showMousePosition () {
         // 实现鼠标移动显示位置
         viewer._cesiumWidget._creditContainer.style.color = '#FFF'
-        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
-        handler.setInputAction((movement) => {
+        viewer.screenSpaceEventHandler.setInputAction((movement) => {
             let cartesian = viewer.camera.pickEllipsoid(movement.endPosition, viewer.scene.globe.ellipsoid)
             if (!cartesian) return
             // 将笛卡尔三维坐标转为地图坐标（弧度）
@@ -104,6 +103,7 @@ export class ViewerEntity {
     // 清空viewer
     clearViewer () {
         viewer.entities.removeAll()
+        viewer.dataSources.removeAll()
     }
 
     // 将绘制的entity至于viewer中心
