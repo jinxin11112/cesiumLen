@@ -29,7 +29,6 @@ export class DrawEntity {
         // 内半球半径
         let innerRadius = point.innerRadius
         op.innerradius = new Cesium.Cartesian3(innerRadius, innerRadius, innerRadius)
-        console.log(op)
         let entity = new Cesium.Entity({
             name: op.name,
             position: op.position,
@@ -71,7 +70,6 @@ export class DrawEntity {
         })
 
         let dataSourcePromise = viewer.dataSources.add(dataSource)
-        viewer.dataSources.zoomTo(dataSourcePromise)
 
         dataSourcePromise.then(function (dataSource) {
             let pixelRange = 15
